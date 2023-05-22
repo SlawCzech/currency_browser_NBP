@@ -192,6 +192,39 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-haystack"
+version = "3.2.1"
+description = "Pluggable search for Django."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-haystack-3.2.1.tar.gz", hash = "sha256:97e3197aefc225fe405b6f17600a2534bf827cb4d6743130c20bc1a06f7293a4"},
+]
+
+[package.dependencies]
+Django = ">=2.2"
+
+[package.extras]
+elasticsearch = ["elasticsearch (>=5,<8)"]
+
+[[package]]
+name = "django-sphinxdoc"
+version = "2.0.0"
+description = "Easily integrate Sphinx documentation into your website."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "django-sphinxdoc-2.0.0.tar.gz", hash = "sha256:f2840cbe7186acec4558fbeb2a6d7dfb64d25b9784e6840fadd32e1ccf1f9e37"},
+    {file = "django_sphinxdoc-2.0.0-py2.py3-none-any.whl", hash = "sha256:ac0ab76366e66e9ce7e46eaccb2f91b386d9c0da53c9ab15e802352c76e6747b"},
+]
+
+[package.dependencies]
+Django = ">=2.0"
+django-haystack = ">=2.8.0"
+
+[[package]]
 name = "flake8"
 version = "6.0.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -562,4 +595,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1f6d9e0298150db188a1e34e85074c62af24526678f554e6e2ace7d243c96b95"
+content-hash = "106536d286852446884e67bffb2221744ad186e791f4063ab8f2b66fff2f14cb"
