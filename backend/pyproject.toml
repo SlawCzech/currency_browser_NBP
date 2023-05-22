@@ -10,8 +10,25 @@ packages = [{include = "currency_browser"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 django = "4.2.1"
+pytest = "7.3.1"
+pytest-django = "4.5.2"
+pytest-cov = "4.0.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+
+
+addopts = [
+    "--cov=.",
+    "--cov-config=.coveragerc",
+    "--cov-report",
+    "term-missing:skip-covered",
+    "--cov-fail-under=80"
+]
