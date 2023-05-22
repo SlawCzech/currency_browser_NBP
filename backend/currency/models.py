@@ -4,9 +4,6 @@ from django.db import models
 class CurrencyName(models.Model):
     name = models.CharField(max_length=35)
     code = models.CharField(max_length=3)
-    currency_values = models.ManyToManyField(
-        "CurrencyValue", related_name="currency_values"
-    )
 
     def __str__(self):
         return self.code
@@ -17,10 +14,7 @@ class CurrencyName(models.Model):
 
 
 class CurrencyDate(models.Model):
-    date = models.DateField(db_index=True)
-    currency_names = models.ManyToManyField(
-        "CurrencyName", related_name="currency_dates", null=True
-    )
+    date = models.DateField(db_index=True, unique=True)
 
     def __str__(self):
         return str(self.date)
@@ -32,6 +26,12 @@ class CurrencyDate(models.Model):
 
 class CurrencyValue(models.Model):
     exchange_rate = models.DecimalField(max_digits=10, decimal_places=8)
+    currency_values = models.ManyToManyField(
+        "CurrencyName", related_name="currency_values"
+    )
+    currency_dates = models.ManyToManyField(
+        "CurrencyDate", related_name="currency_values"
+    )
 
     def __str__(self):
         return str(self.exchange_rate)
