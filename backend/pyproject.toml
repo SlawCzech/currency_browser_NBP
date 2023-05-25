@@ -34,6 +34,12 @@ addopts = [
     "--cov-fail-under=80"
 ]
 
+[tool.pytest.markers]
+slow = "Run slow unit test e.g. for models"
+unit = "Run unit tests"
+smoke = "Run core unit tests"
+dbtest = "Run database tests"
+
 [tool.black]
 line-length = 120
 target-version = ['py311']

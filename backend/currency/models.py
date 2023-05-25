@@ -26,7 +26,7 @@ class CurrencyDate(models.Model):
 
 class CurrencyValue(models.Model):
     exchange_rate = models.DecimalField(max_digits=10, decimal_places=8)
-    currency_values = models.ManyToManyField(
+    currency_names = models.ManyToManyField(
         "CurrencyName", related_name="currency_values"
     )
     currency_dates = models.ManyToManyField(
