@@ -1,10 +1,11 @@
 from _decimal import Decimal
 from datetime import date
+import random
 
 import pytest
 from django.db import IntegrityError
 
-from currency.models import CurrencyValue, CurrencyDate
+from currency.models import CurrencyValue, CurrencyDate, CurrencyName
 
 
 def test_add_one_currency_data(currency):
@@ -39,3 +40,34 @@ def test_add_two_values_for_date_for_one_currency(currency_date, currency_name):
             currency_name=currency_name,
         )
     assert "UNIQUE constraint failed" in str(excinfo)
+
+
+def test_multiple_exchange_rates_at_once(currency_date):
+    currency_names = CurrencyName.objects.all()
+    currency_names_count = currency_names.count()
+    values = [
+        Decimal(str(round(random.uniform(0.1, 20), 4)))
+        for _ in range(currency_names_count)
+    ]
+    currency_values = [
+        CurrencyValue(
+            exchange_rate=value,
+            currency_date=currency_date,
+            currency_name=currency_names[index],
+        )
+        for index, value in enumerate(values)
+    ]
+    CurrencyValue.objects.bulk_create(currency_values)
+
+    currency_values_db = CurrencyValue.objects.all().count()
+
+    assert currency_values_db == currency_names_count
+    assert (
+        CurrencyDate.objects.get(date=currency_date.date).currency_values.count()
+        == currency_names_count
+    )
+    assert (
+        currency_names.first()
+        .currency_values.filter(currency_date=currency_date)
+        .count()
+    ) == 1
