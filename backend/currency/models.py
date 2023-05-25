@@ -26,11 +26,11 @@ class CurrencyDate(models.Model):
 
 class CurrencyValue(models.Model):
     exchange_rate = models.DecimalField(max_digits=10, decimal_places=8)
-    currency_names = models.ManyToManyField(
-        "CurrencyName", related_name="currency_values"
+    currency_name = models.ForeignKey(
+        "CurrencyName", on_delete=models.CASCADE, related_name="currency_values"
     )
-    currency_dates = models.ManyToManyField(
-        "CurrencyDate", related_name="currency_values"
+    currency_date = models.ForeignKey(
+        "CurrencyDate", on_delete=models.CASCADE, related_name="currency_values"
     )
 
     def __str__(self):
@@ -39,3 +39,4 @@ class CurrencyValue(models.Model):
     class Meta:
         verbose_name = "Currency Value"
         verbose_name_plural = "Currency Values"
+        unique_together = ("currency_name", "currency_date")
