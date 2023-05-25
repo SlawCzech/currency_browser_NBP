@@ -1,0 +1,266 @@
+[
+  {
+    "model": "currency.currencyname",
+    "pk": 1,
+    "fields": {
+      "name": "bat (Tajlandia)",
+      "code": "THB"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 2,
+    "fields": {
+      "name": "dolar amerykański",
+      "code": "USD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 3,
+    "fields": {
+      "name": "dolar australijski",
+      "code": "AUD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 4,
+    "fields": {
+      "name": "dolar Hongkongu",
+      "code": "HKD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 5,
+    "fields": {
+      "name": "dolar kanadyjski",
+      "code": "CAD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 6,
+    "fields": {
+      "name": "dolar nowozelandzki",
+      "code": "NZD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 7,
+    "fields": {
+      "name": "dolar singapurski",
+      "code": "SGD"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 8,
+    "fields": {
+      "name": "euro",
+      "code": "EUR"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 9,
+    "fields": {
+      "name": "forint (Węgry)",
+      "code": "HUF"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 10,
+    "fields": {
+      "name": "frank szwajcarski",
+      "code": "CHF"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 11,
+    "fields": {
+      "name": "funt szterling",
+      "code": "GBP"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 12,
+    "fields": {
+      "name": "hrywna (Ukraina)",
+      "code": "UAH"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 13,
+    "fields": {
+      "name": "jen (Japonia)",
+      "code": "JPY"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 14,
+    "fields": {
+      "name": "korona czeska",
+      "code": "CZK"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 15,
+    "fields": {
+      "name": "korona duńska",
+      "code": "DKK"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 16,
+    "fields": {
+      "name": "korona islandzka",
+      "code": "ISK"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 17,
+    "fields": {
+      "name": "korona norweska",
+      "code": "NOK"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 18,
+    "fields": {
+      "name": "korona szwedzka",
+      "code": "SEK"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 19,
+    "fields": {
+      "name": "lej rumuński",
+      "code": "RON"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 20,
+    "fields": {
+      "name": "lew (Bułgaria)",
+      "code": "BGN"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 21,
+    "fields": {
+      "name": "lira turecka",
+      "code": "TRY"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 22,
+    "fields": {
+      "name": "nowy izraelski szekel",
+      "code": "ILS"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 23,
+    "fields": {
+      "name": "peso chilijskie",
+      "code": "CLP"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 24,
+    "fields": {
+      "name": "peso filipińskie",
+      "code": "PHP"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 25,
+    "fields": {
+      "name": "peso meksykańskie",
+      "code": "MXN"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 26,
+    "fields": {
+      "name": "rand (Republika Południowej Afryki)",
+      "code": "ZAR"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 27,
+    "fields": {
+      "name": "real (Brazylia)",
+      "code": "BRL"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 28,
+    "fields": {
+      "name": "ringgit (Malezja)",
+      "code": "MYR"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 29,
+    "fields": {
+      "name": "rupia indonezyjska",
+      "code": "IDR"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 30,
+    "fields": {
+      "name": "rupia indyjska",
+      "code": "INR"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 31,
+    "fields": {
+      "name": "won południowokoreański",
+      "code": "KRW"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 32,
+    "fields": {
+      "name": "yuan renminbi (Chiny)",
+      "code": "CNY"
+    }
+  },
+  {
+    "model": "currency.currencyname",
+    "pk": 33,
+    "fields": {
+      "name": "SDR (MFW)",
+      "code": "XDR"
+    }
+  }
+]
