@@ -28,20 +28,41 @@ def count_holidays_during_weekdays(start_date, end_date):
 
 
 def count_days_off(start_date, end_date):
-    s_date = datetime.strptime(start_date, "%Y-%m-%d")
-    e_date = datetime.strptime(end_date, "%Y-%m-%d")
-
     days_count = 0
-    while s_date <= e_date:
-        if s_date.weekday() >= 5:
+    while start_date <= end_date:
+        if start_date.weekday() >= 5:
             days_count += 1
-        s_date += timedelta(days=1)
+        start_date += timedelta(days=1)
 
     return days_count
 
 
 def count_days(start_date, end_date):
-    return (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days
+    return (end_date - start_date).days
+
+
+def get_currency_data_from_nbp_API(start_date, end_date):
+    currency_nbp_url = f"http://api.nbp.pl/api/exchangerates/tables/a/{start_date}/{end_date}/"
+
+    with request.urlopen(currency_nbp_url) as response:
+        data = json.loads(response.read().decode())
+
+    currency_names = models.CurrencyName.objects.all()
+
+    for day in data:
+        if not models.CurrencyDate.objects.filter(date=datetime.strptime(day["effectiveDate"], "%Y-%m-%d")):
+            currency_date = models.CurrencyDate.objects.create(date=datetime.strptime(day["effectiveDate"], "%Y-%m-%d"))
+
+            currency_values = [
+                models.CurrencyValue(
+                    exchange_rate=rate["mid"],
+                    currency_date=currency_date,
+                    currency_name=currency_names.get(code=rate["code"]),
+                )
+                for rate in day["rates"]
+            ]
+
+            models.CurrencyValue.objects.bulk_create(currency_values)
 
 
 class CurrencyView(FormView):
@@ -54,17 +75,30 @@ class CurrencyView(FormView):
         end_date = form.cleaned_data.get("end_date")
         currencies = form.cleaned_data.get("currency")
 
-        dates = models.CurrencyDate.objects.filter(date__range=(start_date, end_date)).count()
+        dates = models.CurrencyDate.objects.filter(date__range=(start_date, end_date))
 
-        if dates >= count_days(start_date, end_date) - count_holidays_during_weekdays(
+        if dates.count() < count_days(start_date, end_date) - count_holidays_during_weekdays(
             start_date, end_date
         ) - count_days_off(start_date, end_date):
-            # TODO: get data from db
-            pass
+            get_currency_data_from_nbp_API(start_date, end_date)
 
-        # TODO: get data from NBP API
+        currency_data = models.CurrencyValue.objects.filter(
+            currency_date__date__range=(start_date, end_date), currency_name__code__in=currencies
+        ).select_related("currency_name")
 
-        return super().form_valid(form)
+        data = {
+            "labels": [x.code for x in models.CurrencyName.objects.all()],
+            "datasets": [
+                {"label": day.currency_name.code, "data": [z for z in currency_data]
+                 # float(day.exchange_rate)} for day in currency_data
+            ],
+        }
+
+        context = self.get_context_data()
+        context.update({"dates": currency_data})
+        context.update({"data": data})
+
+        return self.render_to_response(context)
 
     def get_form(self, form_class=None):
         currencies = models.CurrencyName.objects.all()
