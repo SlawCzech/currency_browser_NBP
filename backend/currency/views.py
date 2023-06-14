@@ -4,10 +4,17 @@ from datetime import datetime, timedelta
 from django.views.generic import FormView
 from urllib import request
 
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from . import forms, models
+from .serializers import CurrencyRateSerializer
 
 
 def get_holidays(start_date, end_date):
+    start_date = datetime.strftime(start_date, "%Y-%m-%d")
+    end_date = datetime.strftime(end_date, "%Y-%m-%d")
     holidays_url = f"https://openholidaysapi.org/PublicHolidays?countryIsoCode=PL&languageIsoCode=PL&validFrom={start_date}&validTo={end_date}"
     with request.urlopen(holidays_url) as response:
         data = json.loads(response.read().decode())
@@ -70,36 +77,6 @@ class CurrencyView(FormView):
     template_name = "currency/currency_view.html"
     success_url = "/"
 
-    def form_valid(self, form):
-        start_date = form.cleaned_data.get("start_date")
-        end_date = form.cleaned_data.get("end_date")
-        currencies = form.cleaned_data.get("currency")
-
-        dates = models.CurrencyDate.objects.filter(date__range=(start_date, end_date))
-
-        if dates.count() < count_days(start_date, end_date) - count_holidays_during_weekdays(
-            start_date, end_date
-        ) - count_days_off(start_date, end_date):
-            get_currency_data_from_nbp_API(start_date, end_date)
-
-        currency_data = models.CurrencyValue.objects.filter(
-            currency_date__date__range=(start_date, end_date), currency_name__code__in=currencies
-        ).select_related("currency_name")
-
-        data = {
-            "labels": [x.code for x in models.CurrencyName.objects.all()],
-            "datasets": [
-                {"label": day.currency_name.code, "data": [z for z in currency_data]
-                 # float(day.exchange_rate)} for day in currency_data
-            ],
-        }
-
-        context = self.get_context_data()
-        context.update({"dates": currency_data})
-        context.update({"data": data})
-
-        return self.render_to_response(context)
-
     def get_form(self, form_class=None):
         currencies = models.CurrencyName.objects.all()
         form = super().get_form(form_class)
@@ -107,3 +84,48 @@ class CurrencyView(FormView):
         form.fields["currency"].choices = [(currency.code, currency.name.capitalize()) for currency in currencies]
 
         return form
+
+
+class CurrencyAPI(APIView):
+    def post(self, request, format=None):
+        start_date = request.data.get("start_date")
+        end_date = request.data.get("end_date")
+
+        if start_date is not None and end_date is not None:
+            start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+            currencies = models.CurrencyName.objects.all()
+
+            dates = models.CurrencyDate.objects.filter(date__range=(start_date, end_date))
+
+            if dates.count() < count_days(start_date, end_date) - count_holidays_during_weekdays(
+                start_date, end_date
+            ) - count_days_off(start_date, end_date):
+                get_currency_data_from_nbp_API(start_date, end_date)
+
+            currency_data = models.CurrencyValue.objects.filter(
+                currency_date__date__range=(start_date, end_date)
+            ).select_related("currency_name")
+
+            data = {
+                "labels": [date.date.strftime("%Y-%m-%d") for date in dates],
+                "datasets": [
+                    {
+                        "label": currency.code,
+                        "data": [
+                            float(value.exchange_rate)
+                            for value in currency_data
+                            if value.currency_name.code == currency.code
+                        ],
+                    }
+                    for currency in currencies
+                ],
+            }
+
+        else:
+            return Response("Start date and end date are required.", status=status.HTTP_400_BAD_REQUEST)
+
+        # serializer = CurrencyRateSerializer(data, many=True)
+
+        return Response(data, status=status.HTTP_200_OK)

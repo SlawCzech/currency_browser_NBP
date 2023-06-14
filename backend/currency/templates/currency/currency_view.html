@@ -10,7 +10,7 @@
 
 </head>
 <body>
-<form action="" method="POST">
+<form action="" method="POST" id="currencyForm">
     {% csrf_token %}
     {{ form }}
     <button type="submit">Submit</button>
@@ -18,26 +18,62 @@
 <div style="width: 800px;">
     <canvas id="currencyChart"></canvas>
 </div>
-<pre>
+<!--<pre>-->
 
 
-    {% for day in dates %}
+<!--    {% for day in dates %}-->
 
-    {{ day.exchange_rate }} - {{ day.currency_name.name }} - {{ day.currency_date.date }}
+<!--    {{ day.exchange_rate }} - {{ day.currency_name.name }} - {{ day.currency_date.date }}-->
 
-    {% endfor %}
-</pre>
+<!--    {% endfor %}-->
+<!--</pre>-->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
     (async function () {
-        const data = {{ data|safe }};
+        const form = document.querySelector('#currencyForm');
+        const chartElement = document.getElementById('currencyChart');
+        const startDateInput = document.querySelector('input#id_start_date');
+        const endDateInput = document.querySelector('input#id_end_date');
+        const checkBoxes = document.querySelectorAll('input[name="currency"]')
 
-        new Chart(
-            document.getElementById('currencyChart'),
-            {
+        let chart;
+        let names = [];
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const response = await fetch('/currencies/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    start_date: startDateInput.value,
+                    end_date: endDateInput.value,
+                }),
+            });
+            const data = await response.json();
+            if (chart) {
+                chart.destroy(); // Usuń poprzedni wykres, jeśli istnieje
+            }
+
+
+            checkBoxes.forEach((checkbox) => {
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        names.push(checkbox.value);
+                        console.log('Zaznaczono:', checkbox.value);
+                    } else {
+                        names = names.filter((name) => name !== checkbox.value)
+                        console.log('Odznaczono:', checkbox.value)
+                    }
+                });
+            });
+
+            const dataFilter = {...data, datasets: data.datasets.filter((dt) => names.includes(dt.label))}
+            chart = new Chart(chartElement, {
                 type: 'line',
-                data: data,
+                data: dataFilter,
                 options: {
                     responsive: true,
                     plugins: {
@@ -46,12 +82,21 @@
                         },
                         title: {
                             display: true,
-                            text: 'Currency exchange rate'
-                        }
-                    }
+                            text: 'currency rate',
+                        },
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 10,
+                            ticks: {
+                                stepSize: 0.01,
+                            },
+                        },
+                    },
                 },
-            }
-        );
+            });
+        });
     })();
 
 </script>
